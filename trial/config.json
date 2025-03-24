@@ -1,31 +1,17 @@
-// Genereted By sxlmnwb (sxlmnwb@nodex.one)
-
 {
     "log": {
-      "level": "panic",
-      "timestamp": true
+      "level": "panic"
     },
     "dns": {
       "servers": [
         {
           "tag": "remote",
-          "address": "tls://dns.google",
-          "address_resolver": "dns_resolver"
-        },
-        {
-          "tag": "dns_resolver",
-          "address": "8.8.8.8",
-          "detour": "インターネット 🌐"
+          "address": "1.1.1.1"
         },
         {
           "tag": "local",
-          "address": "127.0.0.1",
-          "detour": "ダイレクト 🎭"
-        },
-        {
-          "tag": "rcode",
-          "address": "rcode://success",
-          "detour": "拒否 💢"
+          "address": "172.64.149.213",
+          "detour": "DIRECT"
         },
         {
           "tag": "fakedns",
@@ -39,136 +25,173 @@
           "disable_cache": true
         },
         {
-          "outbound": "any",
-          "server": "rcode",
-          "disable_cache": true
-        },
-        {
           "query_type": [
-            "AAAA",
-            "A"
+            "A",
+            "AAAA"
           ],
-          "server": "fakedns"
+          "server": "fakedns",
+          "rewrite_ttl": 20
         }
       ],
       "fakeip": {
         "enabled": true,
         "inet4_range": "198.18.0.0/15",
         "inet6_range": "fc00::/18"
-      }
+      },
+      "strategy": "ipv4_only"
     },
     "inbounds": [
       {
-        "type": "mixed",
-        "tag": "ミックス",
-        "listen": "::",
-        "listen_port": 9696,
-        "sniff": true
-      },
-      {
-        "type": "redirect",
-        "tag": "リダイレクト",
-        "listen": "::",
-        "listen_port": 9797,
-        "sniff": true
-      },
-      {
         "type": "tproxy",
-        "tag": "Tプロキシ",
+        "tag": "tproxy-in",
         "listen": "::",
         "listen_port": 9898,
         "sniff": true
       },
       {
-        "type": "tun",
-        "tag": "トンネル",
-        "interface_name": "vtun0",
-        "address": [
-          "172.19.0.1/30",
-          "fdfe:dcba:9876::1/126"
-        ],
-        "auto_route": true,
-        "strict_route": true,
-        "stack": "mixed",
-        "platform": {
-          "http_proxy": {
-            "enabled": true,
-            "server": "127.0.0.1",
-            "server_port": 9696
-          }
-        },
-        "sniff": true,
-        "include_package": [],
-        "exclude_package": []
+        "type": "redirect",
+        "tag": "redirect",
+        "listen": "::",
+        "listen_port": 9797,
+        "sniff": true
       }
     ],
     "outbounds": [
       {
         "type": "selector",
-        "tag": "インターネット 🌐",
+        "tag": "INTERNET 🌐",
+        "outbounds": "DIRECT",
+        "providers": "SERVER_1"
+      },
+      {
+        "type": "selector",
+        "tag": "adsblock",
         "outbounds": [
-          "アカマイ 🇮🇩",
-          "アカマイ 🇸🇬",
-          "クラウドフレア ☁",
-          "ダイレクト 🎭",
-          "拒否 💢"
+          "BLOCK",
+          "INTERNET 🌐"
         ]
       },
       {
-        "type": "selector",
-        "tag": "アカマイ 🇮🇩",
-        "providers": "Akamai Indonesia (id-cgk)"
-      },
-      {
-        "type": "selector",
-        "tag": "アカマイ 🇸🇬",
-        "providers": "Akamai Singapore (sg-sin-2)"
-      },
-      {
-        "type": "selector",
-        "tag": "クラウドフレア ☁",
-        "providers": "Cloudflare, Inc"
-      },
-      {
         "type": "dns",
-        "tag": "(๑•᎑•๑)ｳﾝ"
+        "tag": "DNS"
       },
       {
         "type": "direct",
-        "tag": "ダイレクト 🎭"
+        "tag": "DIRECT"
       },
       {
         "type": "block",
-        "tag": "拒否 💢"
+        "tag": "BLOCK"
       }
     ],
     "route": {
+      "geoip": {
+        "download_url": "https://github.com/malikshi/sing-box-geo/releases/latest/download/geoip.db",
+        "download_detour": "INTERNET 🌐"
+      },
+      "geosite": {
+        "download_url": "https://github.com/malikshi/v2ray-rules-dat/releases/latest/download/geosite.db",
+        "download_detour": "INTERNET 🌐"
+      },
       "rules": [
         {
-          "type": "logical",
-          "mode": "or",
-          "rules": [
-            {
-              "port": 53
-            },
-            {
-              "protocol": "dns"
-            }
-          ],
-          "outbound": "(๑•᎑•๑)ｳﾝ"
+          "protocol": "dns",
+          "outbound": "DNS"
         },
         {
-          "ip_is_private": true,
-          "outbound": "ダイレクト 🎭"
+          "ip_cidr": [
+            "0.0.0.0/8",
+            "172.64.149.213/10",
+            "127.0.0.0/8",
+            "198.18.0.0/15",
+            "fc00::/18",
+            "::/128",
+            "::1/128"
+          ],
+          "outbound": "BLOCK"
         },
         {
-          "rule_set": [
-            "ABPindo",
-            "AdGuard",
-            "big_oisd",
-            "d3host"
-          ],
-          "outbound": "拒否 💢"
+          "network": "udp",
+          "protocol": "quic",
+          "geosite": "youtube",
+          "port": 443,
+          "outbound": "BLOCK"
+        },
+        {
+          "geosite": "rule-doh",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-indo",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-umum",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-playstore",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-sosmed",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-gaming",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-streaming",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-ipcheck",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "videoconference",
+          "outbound": "INTERNET 🌐"
+        },
+        {
+          "geosite": "rule-malicious",
+          "outbound": "BLOCK"
+        },
+        {
+          "geosite": "oisd-full",
+          "outbound": "BLOCK"
+        },
+        {
+          "geosite": "rule-ads",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "ABPindo",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "AdGuard",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "big_oisd",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "d3host",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "category-ads-all-tearmoon",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "category-ads-all-malikshi",
+          "outbound": "BLOCK"
+        },
+        {
+          "rule_set": "rule-bank",
+          "outbound": "INTERNET 🌐"
         }
       ],
       "rule_set": [
@@ -177,53 +200,67 @@
           "tag": "ABPindo",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/ABPindo.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
         },
         {
           "type": "remote",
           "tag": "AdGuard",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/AdGuard.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
         },
         {
           "type": "remote",
           "tag": "big_oisd",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/big_oisd.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
         },
         {
           "type": "remote",
           "tag": "d3host",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/d3host.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
+        },
+        {
+          "type": "remote",
+          "tag": "category-ads-all-tearmoon",
+          "format": "binary",
+          "url": "https://github.com/tearmoon/domain-list/raw/release/singbox_rule_set/geosite-category-ads-all.srs",
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
+        },
+        {
+          "type": "remote",
+          "tag": "category-ads-all-malikshi",
+          "format": "binary",
+          "url": "https://raw.githubusercontent.com/malikshi/sing-box-geo/rule-set-geosite/geosite-oisd-full.srs",
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
+        },
+        {
+          "type": "remote",
+          "tag": "rule-bank",
+          "format": "binary",
+          "url": "https://raw.githubusercontent.com/malikshi/sing-box-geo/rule-set-geosite/geosite-bank-id.srs",
+          "download_detour": "INTERNET 🌐",
+          "update_interval": "12h0m0s"
         }
       ],
-      "final": "インターネット 🌐",
-      "auto_detect_interface": true
+      "final": "INTERNET 🌐",
+      "auto_detect_interface": false
     },
     "outbound_providers": [
       {
         "type": "local",
-        "path": "../clash/proxy_provider/id.yaml",
-        "tag": "Akamai Indonesia (id-cgk)"
-      },
-      {
-        "type": "local",
-        "path": "../clash/proxy_provider/sg.yaml",
-        "tag": "Akamai Singapore (sg-sin-2)"
-      },
-      {
-        "type": "remote",
-        "path": "./providers/cloudflare.json",
-        "tag": "Cloudflare, Inc",
-        "download_url": "https://providers.nodex.one/priv.json",
-        "download_ua": "sing-box",
-        "download_interval": "1h0m0s",
-        "download_detour": "インターネット 🌐",
-        "healthcheck_interval": "15m0s"
+        "path": "../akun.yaml",
+        "tag": "SERVER_1",
+        "healthcheck_interval": "1h0m0s"
       }
     ],
     "experimental": {
@@ -232,8 +269,8 @@
         "path": "cache.db"
       },
       "clash_api": {
-        "external_controller": "0.0.0.0:9090",
-        "external_ui": "../clash/metacubexd"
+        "external_controller": "127.0.0.1:9090",
+        "external_ui": "/data/adb/box/dashboard"
       }
     }
   }
