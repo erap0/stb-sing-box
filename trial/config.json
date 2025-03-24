@@ -1,0 +1,240 @@
+// Genereted By sxlmnwb (sxlmnwb@nodex.one)
+
+{
+    "log": {
+      "level": "panic",
+      "timestamp": true
+    },
+    "dns": {
+      "servers": [
+        {
+          "tag": "remote",
+          "address": "tls://dns.google",
+          "address_resolver": "dns_resolver"
+        },
+        {
+          "tag": "dns_resolver",
+          "address": "8.8.8.8",
+          "detour": "インターネット 🌐"
+        },
+        {
+          "tag": "local",
+          "address": "127.0.0.1",
+          "detour": "ダイレクト 🎭"
+        },
+        {
+          "tag": "rcode",
+          "address": "rcode://success",
+          "detour": "拒否 💢"
+        },
+        {
+          "tag": "fakedns",
+          "address": "fakeip"
+        }
+      ],
+      "rules": [
+        {
+          "outbound": "any",
+          "server": "local",
+          "disable_cache": true
+        },
+        {
+          "outbound": "any",
+          "server": "rcode",
+          "disable_cache": true
+        },
+        {
+          "query_type": [
+            "AAAA",
+            "A"
+          ],
+          "server": "fakedns"
+        }
+      ],
+      "fakeip": {
+        "enabled": true,
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    },
+    "inbounds": [
+      {
+        "type": "mixed",
+        "tag": "ミックス",
+        "listen": "::",
+        "listen_port": 9696,
+        "sniff": true
+      },
+      {
+        "type": "redirect",
+        "tag": "リダイレクト",
+        "listen": "::",
+        "listen_port": 9797,
+        "sniff": true
+      },
+      {
+        "type": "tproxy",
+        "tag": "Tプロキシ",
+        "listen": "::",
+        "listen_port": 9898,
+        "sniff": true
+      },
+      {
+        "type": "tun",
+        "tag": "トンネル",
+        "interface_name": "vtun0",
+        "address": [
+          "172.19.0.1/30",
+          "fdfe:dcba:9876::1/126"
+        ],
+        "auto_route": true,
+        "strict_route": true,
+        "stack": "mixed",
+        "platform": {
+          "http_proxy": {
+            "enabled": true,
+            "server": "127.0.0.1",
+            "server_port": 9696
+          }
+        },
+        "sniff": true,
+        "include_package": [],
+        "exclude_package": []
+      }
+    ],
+    "outbounds": [
+      {
+        "type": "selector",
+        "tag": "インターネット 🌐",
+        "outbounds": [
+          "アカマイ 🇮🇩",
+          "アカマイ 🇸🇬",
+          "クラウドフレア ☁",
+          "ダイレクト 🎭",
+          "拒否 💢"
+        ]
+      },
+      {
+        "type": "selector",
+        "tag": "アカマイ 🇮🇩",
+        "providers": "Akamai Indonesia (id-cgk)"
+      },
+      {
+        "type": "selector",
+        "tag": "アカマイ 🇸🇬",
+        "providers": "Akamai Singapore (sg-sin-2)"
+      },
+      {
+        "type": "selector",
+        "tag": "クラウドフレア ☁",
+        "providers": "Cloudflare, Inc"
+      },
+      {
+        "type": "dns",
+        "tag": "(๑•᎑•๑)ｳﾝ"
+      },
+      {
+        "type": "direct",
+        "tag": "ダイレクト 🎭"
+      },
+      {
+        "type": "block",
+        "tag": "拒否 💢"
+      }
+    ],
+    "route": {
+      "rules": [
+        {
+          "type": "logical",
+          "mode": "or",
+          "rules": [
+            {
+              "port": 53
+            },
+            {
+              "protocol": "dns"
+            }
+          ],
+          "outbound": "(๑•᎑•๑)ｳﾝ"
+        },
+        {
+          "ip_is_private": true,
+          "outbound": "ダイレクト 🎭"
+        },
+        {
+          "rule_set": [
+            "ABPindo",
+            "AdGuard",
+            "big_oisd",
+            "d3host"
+          ],
+          "outbound": "拒否 💢"
+        }
+      ],
+      "rule_set": [
+        {
+          "type": "remote",
+          "tag": "ABPindo",
+          "format": "binary",
+          "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/ABPindo.srs",
+          "download_detour": "インターネット 🌐"
+        },
+        {
+          "type": "remote",
+          "tag": "AdGuard",
+          "format": "binary",
+          "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/AdGuard.srs",
+          "download_detour": "インターネット 🌐"
+        },
+        {
+          "type": "remote",
+          "tag": "big_oisd",
+          "format": "binary",
+          "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/big_oisd.srs",
+          "download_detour": "インターネット 🌐"
+        },
+        {
+          "type": "remote",
+          "tag": "d3host",
+          "format": "binary",
+          "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/d3host.srs",
+          "download_detour": "インターネット 🌐"
+        }
+      ],
+      "final": "インターネット 🌐",
+      "auto_detect_interface": true
+    },
+    "outbound_providers": [
+      {
+        "type": "local",
+        "path": "../clash/proxy_provider/id.yaml",
+        "tag": "Akamai Indonesia (id-cgk)"
+      },
+      {
+        "type": "local",
+        "path": "../clash/proxy_provider/sg.yaml",
+        "tag": "Akamai Singapore (sg-sin-2)"
+      },
+      {
+        "type": "remote",
+        "path": "./providers/cloudflare.json",
+        "tag": "Cloudflare, Inc",
+        "download_url": "https://providers.nodex.one/priv.json",
+        "download_ua": "sing-box",
+        "download_interval": "1h0m0s",
+        "download_detour": "インターネット 🌐",
+        "healthcheck_interval": "15m0s"
+      }
+    ],
+    "experimental": {
+      "cache_file": {
+        "enabled": true,
+        "path": "cache.db"
+      },
+      "clash_api": {
+        "external_controller": "0.0.0.0:9090",
+        "external_ui": "../clash/metacubexd"
+      }
+    }
+  }
+  
