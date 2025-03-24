@@ -1,123 +1,103 @@
 {
-    "log": {"level": "warn", "timestamp": true},
+    "log": {
+      "level": "panic",
+      "output": "/data/adb/box/run/sing-box.log",
+      "timestamp": true
+    },
     "dns": {
       "servers": [
-        {"tag": "Internet-dns", "address": "1.0.0.1", "strategy": "ipv4_only", "detour": "🌏 Internet"},
-        {"tag": "Best Latency-dns", "address": "1.1.1.1", "strategy": "ipv4_only", "detour": "🌐 Best Latency"},
-        {"tag": "direct-dns", "address": "112.215.203.246", "strategy": "ipv4_only", "detour": "direct"},
-        {"tag": "block-dns", "address": "rcode://success"}
+        {
+          "tag": "default",
+          "address": "1.1.1.1"
+        },
+        {
+          "tag": "dns-direct",
+          "address": "8.8.8.8",
+          "detour": "direct"
+        },
+        {
+          "tag": "rcode",
+          "address": "rcode://success"
+        }
       ],
       "rules": [
-        {"domain_suffix": [".vidio.com", ".fb.com", ".naver.com"], "server": "direct-dns", "rewrite_ttl": 20},
-        {"network": "udp", "port": 443, "server": "block-dns", "rewrite_ttl": 20},
-        {"outbound": "🌏 Internet", "server": "Internet-dns", "rewrite_ttl": 20},
-        {"outbound": "🌐 Best Latency", "server": "Best Latency-dns", "rewrite_ttl": 20},
-        {"outbound": "direct", "server": "direct-dns", "rewrite_ttl": 20},
-        {"outbound": "any", "server": "direct-dns", "rewrite_ttl": 20}
+        {
+          "outbound": "any",
+          "server": "dns-direct"
+        }
       ],
-      "reverse_mapping": true,
-      "strategy": "ipv4_only",
-      "independent_cache": true
+      "strategy": "prefer_ipv4"
     },
-    "inbounds": [{"type": "tproxy", "tag": "tproxy-in", "listen": "::", "listen_port": 9898, "sniff": true},
-      {"type": "redirect", "tag": "redirect", "listen": "::", "listen_port": 9797, "sniff": true}],
+    "inbounds": [
+      {
+        "type": "tproxy",
+        "tag": "tproxy-in",
+        "listen": "::",
+        "listen_port": 1554,
+        "sniff": true
+      },
+      {
+        "type": "redirect",
+        "tag": "redirect-in",
+        "listen": "::",
+        "listen_port": 9797,
+        "sniff": true
+      }
+    ],
     "outbounds": [
       {
         "type": "selector",
-        "tag": "🌏 Internet",
+        "tag": "default",
         "outbounds": [
-          "🌐 Best Latency",
-          "🇮🇩 (ID) Amazoncom 1",
-          "🇮🇩 (ID) Google Cloud 2",
-          "🇮🇩(ID) Akamai Connected Cloud 4",
-          "🇮🇩 (ID) Alibaba 5",
-          "🇮🇩 (ID) PT Telkom Indonesia 6",
-          "🇮🇩 (ID) PT Pusat Media Indonesia 11",
-          "🇮🇩 (ID) Tencent cloud computing 12",
-          "🇮🇩 (ID) Rumahweb 13",
-          "🇸🇬 (SG) Green Floid 1",
-          "🇸🇬 (SG) Hetzner Online 2",
-          "🇸🇬 (SG) Neapol Group Ltd",
-          "🇸🇬 (SG) Amazoncom 16",
-          "🇸🇬 (SG) OVHcloud 20",
-          "🇸🇬 (SG) Akamai Connected Cloud",
-          "🇸🇬 (SG) Oracle Cloud",
-          "🇸🇬 (SG) Cloudflare Warp",
-          "🇸🇬 (SG) Digital Ocean"
+          "socks-out"
         ]
       },
-      {"type": "selector",  "tag": "🚀 SOSMED (FB/IG/LINE)", "outbounds": ["direct", "🌏 Internet"]},
-      {"type": "selector",  "tag": "📞 WhatsApp",  "outbounds": ["direct", "🌏 Internet"]},
-      {"type": "selector", "tag": "🚀 GAMESMAX(ML/FF/AOV)", "outbounds": ["direct", "🌏 Internet"]},
       {
-        "type": "urltest",
-        "tag": "🌐 Best Latency",
-        "outbounds": [
-          "🇮🇩 (ID) Amazoncom 1",
-          "🇮🇩 (ID) Google Cloud 2",
-          "🇮🇩(ID) Akamai Connected Cloud 4",
-          "🇮🇩 (ID) Alibaba 5",
-          "🇮🇩 (ID) PT Telkom Indonesia 6",
-          "🇮🇩 (ID) PT Pusat Media Indonesia 11",
-          "🇮🇩 (ID) Tencent cloud computing 12",
-          "🇮🇩 (ID) Rumahweb 13",
-          "🇸🇬 (SG) Green Floid 1",
-          "🇸🇬 (SG) Hetzner Online 2",
-          "🇸🇬 (SG) Neapol Group Ltd",
-          "🇸🇬 (SG) Amazoncom 16",
-          "🇸🇬 (SG) OVHcloud 20",
-          "🇸🇬 (SG) Akamai Connected Cloud",
-          "🇸🇬 (SG) Oracle Cloud",
-          "🇸🇬 (SG) Cloudflare Warp",
-          "🇸🇬 (SG) Digital Ocean"
-        ]
+        "type": "socks",
+        "tag": "socks-out",
+        "server": "",
+        "server_port": ,
+        "version": "5",
+        "username": "",
+        "password": "",
+        "network": "udp"
       },
-      {"type": "selector", "tag": "🚫 Option ADs", "outbounds": ["block", "🌏 Internet"]},
-      {"type": "selector", "tag": "🔞 Option P0rn", "outbounds": ["block", "🌏 Internet"]},
-      {"type": "vmess", "tag": "🇮🇩 (ID) Amazoncom 1", "server": "quiz.vidio.com", "server_port": 443,  "uuid": "9072d339-3885-4fe1-b0bc-29fa7505410e", "security": "auto", "tls": {"enabled": true, "server_name": "fixedfloati.cfd", "insecure": true}, "transport": {"type": "ws", "path": "/linkwsd", "headers": {"Host": "fixedfloati.cfd"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) Google Cloud 2", "server": "quiz.vidio.com", "server_port": 443, "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552", "security": "auto", "tls": { "enabled": true, "server_name": "sgfqkqmltcy.site", "insecure": true}, "transport": {"type": "ws", "path": "/rbqqvws", "headers": {"Host": "sgfqkqmltcy.site"}}},
-      {"type": "vmess", "tag": "🇮🇩(ID) Akamai Connected Cloud 4", "server": "quiz.vidio.com", "server_port": 8443, "uuid": "e88b85c6-93b4-47f6-b3fb-2c55dcb1289f", "security": "auto", "tls": {"enabled": true, "server_name": "lax2.ibgfw.top","insecure": true}, "transport": {"type": "ws", "path": "/dyajvws", "headers":{"Host": "lax2.ibgfw.top"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) Alibaba 5", "server": "quiz.vidio.com", "server_port": 443, "uuid": "0a3cd062-241a-43fc-9c50-eccacbbd5aae", "security": "auto", "tls": {"enabled": true, "server_name": "hkvm.gecs.top", "insecure": true}, "transport": {"type": "ws", "path": "/vm", "headers": {"Host": "hkvm.gecs.top"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) PT Telkom Indonesia 6", "server": "quiz.vidio.com", "server_port": 8443, "uuid": "c313606f-98c2-4d7b-ba74-48b94f61b11d", "security": "auto", "tls": {"enabled": true, "server_name": "uswuxian.pai50288.uk", "insecure": true}, "transport": {"type": "ws", "path": "/", "headers": {"Host": "uswuxian.pai50288.uk"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) PT Pusat Media Indonesia 11", "server": "quiz.vidio.com", "server_port": 443, "uuid": "3f638f34-8dba-4186-bc43-2716a7ddd4be", "security": "auto", "tls": {"enabled": true, "server_name": "az05.beyondy.cfd", "insecure": true}, "transport": {"type": "ws", "path": "/link", "headers": {"Host": "az05.beyondy.cfd"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) Tencent cloud computing 12", "server": "quiz.vidio.com", "server_port": 443, "uuid": "3fdaef98-6fb4-49e9-84eb-bdfbe3c32b51", "security": "auto", "tls": {"enabled": true, "server_name": "hanguo.daluquan.top", "insecure": true}, "transport": {"type": "ws", "path": "/", "headers": {"Host": "hanguo.daluquan.top"}}},
-      {"type": "vmess", "tag": "🇮🇩 (ID) Rumahweb 13", "server": "quiz.vidio.com", "server_port": 2053, "uuid": "eb817168-5f83-4fba-af99-881ec0e547b1", "security": "auto", "tls": {"enabled": true, "server_name": "qurantv.iribquran.com", "insecure": true}, "transport": {"type": "ws", "path": "/", "headers": {"Host": "qurantv.iribquran.com"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Green Floid 1", "server": "quiz.vidio.com", "server_port": 443, "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552", "security": "auto", "tls": {"enabled": true, "server_name": "hknbyivfffj.site", "insecure": true}, "transport": {"type": "ws", "path": "/rbqqvws", "headers": {"Host": "hknbyivfffj.site"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Hetzner Online 2", "server": "quiz.vidio.com", "server_port": 8443, "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e", "security": "auto", "tls": {"enabled": true, "server_name": "lax1.ibgfw.top", "insecure": true}, "transport": {"type": "ws", "path": "/xrenvws", "headers": {"Host": "lax1.ibgfw.top"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Neapol Group Ltd", "server": "quiz.vidio.com", "server_port": 2052, "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d", "security": "auto", "transport": {"type": "ws", "path": "/dabai.in172.64.6.224", "headers": {"Host": "quiz.vidio.com.s1.db-link02.top"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Amazoncom 16", "server": "quiz.vidio.com", "server_port": 2052, "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d", "security": "auto", "transport": {"type": "ws", "path": "/dabai.in172.64.6.224", "headers": {"Host": "quiz.vidio.com.s2.db-link02.top"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) OVHcloud 20", "server": "quiz.vidio.com", "server_port": 2052, "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d", "security": "auto", "transport": {"type": "ws", "path": "/dabai.in172.64.6.224", "headers": {"Host": "quiz.vidio.com.s4.db-link02.top"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Akamai Connected Cloud", "server": "quiz.vidio.com", "server_port": 2052, "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d", "security": "auto", "transport": {"type": "ws", "path": "/dabai.in172.64.6.224", "headers": {"Host": "quiz.vidio.com.s5.db-link02.top"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Oracle Cloud", "server": "quiz.vidio.com", "server_port": 8880, "uuid": "1c1cb7fe-a929-4e47-b292-4073b63d2d4b", "security": "auto", "transport": {"type": "ws", "path": "/", "headers": {"Host": "lamusa.daozhang.site"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Cloudflare Warp", "server": "quiz.vidio.com", "server_port": 443, "uuid": "4187fdd4-ffae-4a3d-b620-ab23e04599fc", "security": "auto", "tls": {"enabled": true, "server_name": "biazh.mmzhk.website", "insecure": true}, "transport": {"type": "ws", "path": "/", "headers": {"Host": "biazh.mmzhk.website"}}},
-      {"type": "vmess", "tag": "🇸🇬 (SG) Digital Ocean", "server": "quiz.vidio.com", "server_port": 443, "uuid": "cae97b1c-35e8-4cf2-dc1b-52032c3d3fa7", "security": "auto", "tls": {"enabled": true, "server_name": "jp.insbot.filegear-sg.me", "insecure": true}, "transport": {"type": "ws", "path": "/aa", "headers": {"Host": "jp.insbot.filegear-sg.me"}}},
-      {"type": "direct", "tag": "direct"},
-      {"type": "block", "tag": "block"},
-      {"type": "dns", "tag": "dns-out"}
+      {
+        "type": "direct",
+        "tag": "direct"
+      }
     ],
     "route": {
       "rules": [
-        {"package_name": "com.whatsapp", "outbound": "📞 WhatsApp"},
-        {"package_name": ["com.facebook.orca", "com.facebook.katana", "com.instagram.android", "jp.naver.line.android"], "outbound": "🚀 SOSMED (FB/IG/LINE)"},
-        {"package_name": ["com.mobile.legends", "com.dts.freefireth", "com.garena.game.kgid"],"outbound": "🚀 GAMESMAX(ML/FF/AOV)"},
-        {"geosite": ["category-ads",  "category-ads-all", "category-ads@ads", "rule-ads", "oisd-full"], "outbound": "🚫 Option ADs"},
-        {"geosite": ["oisd-nsfw", "category-porn"], "outbound": "🔞 Option P0rn"},
-        {"geosite": ["facebook", "facebook-dev", "instagram", "messenger", "line"], "outbound": "🚀 SOSMED (FB/IG/LINE)"},
-        {"geosite": "whatsapp", "outbound": "📞 WhatsApp"},
-        {"rule_set": "AWAvenue-Ads", "outbound": "🚫 Option ADs"},
-        {"rule_set": "geosite-d3ward", "outbound": "🔞 Option P0rn"},
-        {"protocol": "dns", "outbound": "dns-out"},
-        {"network": "udp", "port": 443, "outbound": "block"},
-        {"port": 53, "outbound": "dns-out"},
-        {"inbound": "dns-in","outbound": "dns-out"},
-        {"source_ip_cidr": ["127.0.0.1/32", "28.0.0.1/8", "::1/128"], "ip_cidr": ["127.0.0.1/32", "28.0.0.1/8", "::1/128"], "outbound": "block"}
+        {
+          "action": "sniff"
+        },
+        {
+          "type": "logical",
+          "mode": "or",
+          "rules": [
+            {
+              "port": 53
+            },
+            {
+              "protocol": "dns"
+            }
+          ],
+          "action": "hijack-dns"
+        }
       ],
-      "rule_set": [
-        {"type": "remote", "tag": "geosite-d3ward", "format": "binary", "url": "https://raw.githubusercontent.com/malikshi/sing-box-geo/rule-set-geosite/geosite-category-porn.srs", "download_detour": "🌏 Internet", "update_interval": "720h0m0s"},
-        {"type": "remote", "tag": "AWAvenue-Ads", "format": "binary", "url": "https://raw.githubusercontent.com/TG-Twilight/AWAvenue-Ads-Rule/main/Filters/AWAvenue-Ads-Rule-Singbox.srs", "download_detour": "🌏 Internet", "update_interval": "24h0m0s"}
-      ],
-      "final": "🌏 Internet",
-      "override_android_vpn": true
+      "final": "default",
+      "auto_detect_interface": false
     },
-    "experimental": {"cache_file": {"enabled": true, "path": "cache.db"}, "clash_api": {"external_controller": "0.0.0.0:9090", "external_ui": "metacubex", "external_ui_download_url": "https://github.com/MetaCubeX/Yacd-meta/archive/gh-pages.zip", "external_ui_download_detour": "🌏 Internet", "default_mode": "rule"}}
+    "experimental": {
+      "cache_file": {
+        "enabled": true,
+        "path": "cache.db"
+      },
+      "clash_api": {
+        "external_controller": "0.0.0.0:9090",
+        "external_ui": "./dashboard"
+      }
+    }
   }
+  
