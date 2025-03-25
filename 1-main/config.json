@@ -155,25 +155,25 @@
           "type": "local",
           "tag": "ABPindo",
           "format": "binary",
-          "path": "/root/ABPindo.srs"
+          "path": "./providers/ABPindo.srs"
         },
         {
           "type": "local",
           "tag": "AdGuard",
           "format": "binary",
-          "path": "/root/AdGuard.srs"
+          "path": "./providers/AdGuard.srs"
         },
         {
           "type": "remote",
           "tag": "big_oisd",
           "format": "binary",
-          "path": "/root/big_oisd.srs"
+          "path": "./providers/big_oisd.srs"
         },
         {
           "type": "remote",
           "tag": "d3host",
           "format": "binary",
-          "path": "/root/d3host.srs"
+          "path": "./providers/d3host.srs"
         }
       ],
       "final": "OUT",
@@ -182,7 +182,7 @@
     "outbound_providers": [
       {
         "type": "remote",
-        "path": "/root/indo.txt",
+        "path": "./proxy/indo.txt",
         "tag": "ID",
         "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
         "download_ua": "sing-box",
@@ -192,7 +192,7 @@
       },
       {
         "type": "remote",
-        "path": "/root/singapura.txt",
+        "path": "./proxy/singapura.txt",
         "tag": "SG",
         "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
         "download_ua": "sing-box",
@@ -208,7 +208,7 @@
       },
       "clash_api": {
         "external_controller": "0.0.0.0:9090",
-        "external_ui": "/root/metacubexd"
+        "external_ui": "/root/metacubexd/"
       }
     }
   }
