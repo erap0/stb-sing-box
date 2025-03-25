@@ -1,5 +1,4 @@
 // Genereted By sxlmnwb (sxlmnwb@nodex.one)
-
 {
     "log": {
       "level": "panic",
@@ -10,20 +9,16 @@
         {
           "tag": "remote",
           "address": [
-            "tls://dns.google",
-            "tls://one.one.one.one",
-            "tls://dns.opendns.com"
+            "https://1.1.1.1/dns-query"
           ],
           "address_resolver": "dns_resolver"
         },
         {
           "tag": "dns_resolver",
           "address": [
-              "8.8.8.8",
-              "1.1.1.1",
-              "208.67.222.222"
+              "1.1.1.1"
           ],
-          "detour": "インターネット 🌐"
+          "detour": "OUT"
         },
         {
           "tag": "local",
@@ -31,12 +26,12 @@
               "127.0.0.1",
               "::1"
           ],
-          "detour": "ダイレクト 🎭"
+          "detour": "DIRECT"
         },
         {
           "tag": "rcode",
           "address": "rcode://success",
-          "detour": "拒否 💢"
+          "detour": "BLOCK"
         },
         {
           "tag": "fakedns",
@@ -70,29 +65,8 @@
     },
     "inbounds": [
       {
-        "type": "mixed",
-        "tag": "ミックス",
-        "listen": "::",
-        "listen_port": 9696,
-        "sniff": true
-      },
-      {
-        "type": "redirect",
-        "tag": "リダイレクト",
-        "listen": "::",
-        "listen_port": 9797,
-        "sniff": true
-      },
-      {
-        "type": "tproxy",
-        "tag": "Tプロキシ",
-        "listen": "::",
-        "listen_port": 9898,
-        "sniff": true
-      },
-      {
         "type": "tun",
-        "tag": "トンネル",
+        "tag": "TUN",
         "interface_name": "vtun0",
         "address": [
           "172.19.0.1/30",
@@ -116,41 +90,23 @@
     "outbounds": [
       {
         "type": "selector",
-        "tag": "インターネット 🌐",
+        "tag": "OUT",
         "outbounds": [
-          "アカマイ 🇮🇩",
-          "アカマイ 🇸🇬",
-          "クラウドフレア ☁",
-          "ダイレクト 🎭",
-          "拒否 💢"
+          "DIRECT",
+          "BLOCK"
         ]
       },
       {
-        "type": "selector",
-        "tag": "アカマイ 🇮🇩",
-        "providers": "Akamai Indonesia (id-cgk)"
-      },
-      {
-        "type": "selector",
-        "tag": "アカマイ 🇸🇬",
-        "providers": "Akamai Singapore (sg-sin-2)"
-      },
-      {
-        "type": "selector",
-        "tag": "クラウドフレア ☁",
-        "providers": "Cloudflare, Inc"
-      },
-      {
         "type": "dns",
-        "tag": "(๑•᎑•๑)ｳﾝ"
+        "tag": "DNS"
       },
       {
         "type": "direct",
-        "tag": "ダイレクト 🎭"
+        "tag": "DIRECT"
       },
       {
         "type": "block",
-        "tag": "拒否 💢"
+        "tag": "BLOCK"
       }
     ],
     "route": {
@@ -166,11 +122,11 @@
               "protocol": "dns"
             }
           ],
-          "outbound": "(๑•᎑•๑)ｳﾝ"
+          "outbound": "DNS"
         },
         {
           "ip_is_private": true,
-          "outbound": "ダイレクト 🎭"
+          "outbound": "DIRECT"
         },
         {
           "rule_set": [
@@ -179,7 +135,7 @@
             "big_oisd",
             "d3host"
           ],
-          "outbound": "拒否 💢"
+          "outbound": "BLOCK"
         }
       ],
       "rule_set": [
@@ -188,52 +144,52 @@
           "tag": "ABPindo",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/ABPindo.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "OUT"
         },
         {
           "type": "remote",
           "tag": "AdGuard",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/AdGuard.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "OUT"
         },
         {
           "type": "remote",
           "tag": "big_oisd",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/big_oisd.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "OUT"
         },
         {
           "type": "remote",
           "tag": "d3host",
           "format": "binary",
           "url": "https://github.com/sxlmnwb/my_blocklist/raw/refs/heads/main/d3host.srs",
-          "download_detour": "インターネット 🌐"
+          "download_detour": "OUT"
         }
       ],
-      "final": "インターネット 🌐",
+      "final": "OUT",
       "auto_detect_interface": true
     },
     "outbound_providers": [
       {
-        "type": "local",
-        "path": "../clash/proxy_provider/id.yaml",
-        "tag": "Akamai Indonesia (id-cgk)"
-      },
-      {
-        "type": "local",
-        "path": "../clash/proxy_provider/sg.yaml",
-        "tag": "Akamai Singapore (sg-sin-2)"
+        "type": "remote",
+        "path": "indo.txt",
+        "tag": "ID",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
+        "download_ua": "sing-box",
+        "download_interval": "1h0m0s",
+        "download_detour": "OUT",
+        "healthcheck_interval": "15m0s"
       },
       {
         "type": "remote",
-        "path": "./providers/cloudflare.json",
-        "tag": "Cloudflare, Inc",
-        "download_url": "https://providers.nodex.one/priv.json",
+        "path": "singapura.txt",
+        "tag": "ID",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
         "download_ua": "sing-box",
         "download_interval": "1h0m0s",
-        "download_detour": "インターネット 🌐",
+        "download_detour": "OUT",
         "healthcheck_interval": "15m0s"
       }
     ],
@@ -244,7 +200,7 @@
       },
       "clash_api": {
         "external_controller": "0.0.0.0:9090",
-        "external_ui": "../clash/metacubexd"
+        "external_ui": "metacubexd"
       }
     }
   }
