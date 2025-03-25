@@ -1,0 +1,214 @@
+// Genereted By sxlmnwb (sxlmnwb@nodex.one)
+{
+    "log": {
+      "level": "error",
+      "timestamp": true
+    },
+    "dns": {
+      "servers": [
+        {
+          "tag": "remote",
+          "address": [
+            "https://1.1.1.1/dns-query"
+          ],
+          "address_resolver": "dns_resolver"
+        },
+        {
+          "tag": "dns_resolver",
+          "address": [
+              "1.1.1.1"
+          ],
+          "detour": "OUT"
+        },
+        {
+          "tag": "local",
+          "address": [
+              "112.215.198.248",
+              "112.215.198.254"
+          ],
+          "detour": "DIRECT"
+        },
+        {
+          "tag": "rcode",
+          "address": "rcode://success",
+          "detour": "BLOCK"
+        },
+        {
+          "tag": "fakedns",
+          "address": "fakeip"
+        }
+      ],
+      "rules": [
+        {
+          "outbound": "any",
+          "server": "local",
+          "disable_cache": true
+        },
+        {
+          "outbound": "any",
+          "server": "rcode",
+          "disable_cache": true
+        },
+        {
+          "query_type": [
+            "AAAA",
+            "A"
+          ],
+          "server": "fakedns"
+        }
+      ],
+      "fakeip": {
+        "enabled": true,
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      }
+    },
+    "inbounds": [
+      {
+        "type": "tun",
+        "tag": "TUN",
+        "interface_name": "vtun0",
+        "address": [
+          "172.19.0.1/30",
+          "fdfe:dcba:9876::1/126"
+        ],
+        "auto_route": true,
+        "strict_route": true,
+        "stack": "mixed",
+        "platform": {
+          "http_proxy": {
+            "enabled": true,
+            "server": "127.0.0.1",
+            "server_port": 9696
+          }
+        },
+        "sniff": true,
+        "include_package": [],
+        "exclude_package": []
+      }
+    ],
+    "outbounds": [
+      {
+        "type": "selector",
+        "tag": "OUT",
+        "outbounds": [
+          "INDO",
+          "SINGA",
+          "DIRECT",
+          "BLOCK"
+        ]
+      },
+      {
+        "type":"selector",
+        "tag":"INDO",
+        "providers":"ID"
+      },
+      {
+        "type":"selector",
+        "tag":"SINGA",
+        "providers":"SG"
+      },
+      {
+        "type": "dns",
+        "tag": "DNS"
+      },
+      {
+        "type": "direct",
+        "tag": "DIRECT"
+      },
+      {
+        "type": "block",
+        "tag": "BLOCK"
+      }
+    ],
+    "route": {
+      "rules": [
+        {
+          "type": "logical",
+          "mode": "or",
+          "rules": [
+            {
+              "port": 53
+            },
+            {
+              "protocol": "dns"
+            }
+          ],
+          "outbound": "DNS"
+        },
+        {
+          "ip_is_private": true,
+          "outbound": "DIRECT"
+        },
+        {
+          "rule_set": [
+            "ABPindo",
+            "AdGuard",
+            "big_oisd",
+            "d3host"
+          ],
+          "outbound": "BLOCK"
+        }
+      ],
+      "rule_set": [
+        {
+          "type": "local",
+          "tag": "ABPindo",
+          "format": "binary",
+          "path": "/root/ABPindo.srs"
+        },
+        {
+          "type": "local",
+          "tag": "AdGuard",
+          "format": "binary",
+          "path": "/root/AdGuard.srs"
+        },
+        {
+          "type": "remote",
+          "tag": "big_oisd",
+          "format": "binary",
+          "path": "/root/big_oisd.srs"
+        },
+        {
+          "type": "remote",
+          "tag": "d3host",
+          "format": "binary",
+          "path": "/root/d3host.srs"
+        }
+      ],
+      "final": "OUT",
+      "auto_detect_interface": true
+    },
+    "outbound_providers": [
+      {
+        "type": "remote",
+        "path": "/root/indo.txt",
+        "tag": "ID",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
+        "download_ua": "sing-box",
+        "download_interval": "1h0m0s",
+        "download_detour": "OUT",
+        "healthcheck_interval": "15m0s"
+      },
+      {
+        "type": "remote",
+        "path": "/root/singapura.txt",
+        "tag": "SG",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
+        "download_ua": "sing-box",
+        "download_interval": "1h0m0s",
+        "download_detour": "OUT",
+        "healthcheck_interval": "15m0s"
+      }
+    ],
+    "experimental": {
+      "cache_file": {
+        "enabled": true,
+        "path": "cache.db"
+      },
+      "clash_api": {
+        "external_controller": "0.0.0.0:9090",
+        "external_ui": "/root/metacubexd"
+      }
+    }
+  }
