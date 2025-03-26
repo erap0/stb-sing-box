@@ -125,6 +125,19 @@
     "rules": [
       {
         "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-youtube"
+          },
+          {
+            "protocol": "quic"
+          }
+        ],
+        "outbound": "BLOCK"
+      },
+      {
+        "type": "logical",
         "mode": "or",
         "rules": [
           {
@@ -150,19 +163,6 @@
           "AdGuard",
           "big_oisd",
           "d3host"
-        ],
-        "outbound": "BLOCK"
-      },
-      {
-        "type": "logical",
-        "mode": "and",
-        "rules": [
-          {
-            "rule_set": "geosite-youtube"
-          },
-          {
-            "protocol": "quic"
-          }
         ],
         "outbound": "BLOCK"
       }
