@@ -84,12 +84,19 @@
   ],
   "outbounds": [
     {
-      "type": "urltest",
+      "type": "selector",
       "tag": "OUT",
       "outbounds": [
-        "INDO",
-        "SINGA",
+        "PROXY",
         "DIRECT"
+      ]
+    },
+    {
+      "type": "urltest",
+      "tag": "PROXY",
+      "outbounds": [
+        "INDO",
+        "SINGA"
       ],
       "tolerance": 800
     },
