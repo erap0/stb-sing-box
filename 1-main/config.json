@@ -84,29 +84,32 @@
   ],
   "outbounds": [
     {
-      "type": "selector",
+      "type": "urltest",
       "tag": "OUT",
       "outbounds": [
         "INDO",
         "SINGA",
-        "DIRECT",
-        "BLOCK"
-      ]
+        "DIRECT"
+      ],
+      "tolerance": 1000
     },
     {
-      "type":"selector",
+      "type":"urltest",
       "tag":"INDO",
-      "providers":"ID"
+      "providers":"ID",
+      "tolerance": 600
     },
     {
-      "type":"selector",
+      "type":"urltest",
       "tag":"SINGA",
-      "providers":"SG"
+      "providers":"SG",
+      "tolerance": 600
     },
     {
-      "type":"selector",
+      "type":"urltest",
       "tag":"RESOLVE",
-      "providers":"UDP"
+      "providers":"UDP",
+      "tolerance": 600
     },
     {
       "type": "dns",
@@ -226,7 +229,8 @@
     {
       "type": "local",
       "path": "proxy/udp.txt",
-      "tag": "UDP"
+      "tag": "UDP",
+      "healthcheck_interval": "15m0s"
     }
   ],
   "experimental": {
