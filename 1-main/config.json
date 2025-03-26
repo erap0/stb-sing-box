@@ -152,6 +152,19 @@
           "d3host"
         ],
         "outbound": "BLOCK"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-youtube"
+          },
+          {
+            "protocol": "quic"
+          }
+        ],
+        "outbound": "BLOCK"
       }
     ],
     "rule_set": [
@@ -168,17 +181,23 @@
         "path": "providers/AdGuard.srs"
       },
       {
-        "type": "remote",
+        "type": "local",
         "tag": "big_oisd",
         "format": "binary",
         "path": "providers/big_oisd.srs"
       },
       {
-        "type": "remote",
+        "type": "local",
         "tag": "d3host",
         "format": "binary",
         "path": "providers/d3host.srs"
-      }
+      },
+      {
+        "type": "local",
+        "tag": "geosite-youtube",
+        "format": "binary",
+        "path": "providers/geosite-youtube.srs"
+      } 
     ],
     "final": "OUT",
     "auto_detect_interface": true
