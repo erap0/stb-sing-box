@@ -1,7 +1,7 @@
 // Genereted By sxlmnwb (sxlmnwb@nodex.one)
 {
     "log": {
-      "level": "info",
+      "level": "error",
       "timestamp": true
     },
     "dns": {
@@ -155,25 +155,25 @@
           "type": "local",
           "tag": "ABPindo",
           "format": "binary",
-          "path": "providers/ABPindo.srs"
+          "path": "/root/ABPindo.srs"
         },
         {
           "type": "local",
           "tag": "AdGuard",
           "format": "binary",
-          "path": "providers/AdGuard.srs"
+          "path": "/root/AdGuard.srs"
         },
         {
           "type": "remote",
           "tag": "big_oisd",
           "format": "binary",
-          "path": "providers/big_oisd.srs"
+          "path": "/root/big_oisd.srs"
         },
         {
           "type": "remote",
           "tag": "d3host",
           "format": "binary",
-          "path": "providers/d3host.srs"
+          "path": "/root/d3host.srs"
         }
       ],
       "final": "OUT",
@@ -182,7 +182,7 @@
     "outbound_providers": [
       {
         "type": "remote",
-        "path": "proxy/indo.txt",
+        "path": "/root/indo.txt",
         "tag": "ID",
         "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
         "download_ua": "sing-box",
@@ -192,7 +192,7 @@
       },
       {
         "type": "remote",
-        "path": "proxy/singapura.txt",
+        "path": "/root/singapura.txt",
         "tag": "SG",
         "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
         "download_ua": "sing-box",
