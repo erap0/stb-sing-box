@@ -49,6 +49,10 @@
         "server": "rcode"
       },
       {
+        "ip_cidr": "104.17.3.81",
+        "server": "local"
+      },
+      {
         "outbound": "any",
         "server": "rcode",
         "disable_cache": true
