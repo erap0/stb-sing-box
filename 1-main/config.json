@@ -8,9 +8,7 @@
       {
         "tag": "remote",
         "address": [
-          "tls://one.one.one.one",
-          "tls://dns.google",
-          "tls://dns.adguard-dns.com"
+          "tls://dns.google"
         ],
         "address_resolver": "dns_resolver",
         "address_strategy": "prefer_ipv4"
@@ -18,9 +16,7 @@
       {
         "tag": "dns_resolver",
         "address": [
-            "1.1.1.1",
-            "8.8.8.8",
-            "94.140.14.14"
+            "8.8.8.8"
         ],
         "detour": "RESOLVE"
       },
@@ -95,25 +91,25 @@
         "SINGA",
         "DIRECT"
       ],
-      "tolerance": 1000
+      "tolerance": 2000
     },
     {
       "type":"urltest",
       "tag":"INDO",
       "providers":"ID",
-      "tolerance": 600
+      "tolerance": 1500
     },
     {
       "type":"urltest",
       "tag":"SINGA",
       "providers":"SG",
-      "tolerance": 600
+      "tolerance": 1500
     },
     {
       "type":"urltest",
       "tag":"RESOLVE",
       "providers":"UDP",
-      "tolerance": 600
+      "tolerance": 1500
     },
     {
       "type": "dns",
