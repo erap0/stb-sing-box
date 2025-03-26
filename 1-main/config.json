@@ -91,25 +91,25 @@
         "SINGA",
         "DIRECT"
       ],
-      "tolerance": 2000
+      "tolerance": 800
     },
     {
       "type":"urltest",
       "tag":"INDO",
       "providers":"ID",
-      "tolerance": 1500
+      "tolerance": 400
     },
     {
       "type":"urltest",
       "tag":"SINGA",
       "providers":"SG",
-      "tolerance": 1500
+      "tolerance": 400
     },
     {
       "type":"urltest",
       "tag":"RESOLVE",
       "providers":"UDP",
-      "tolerance": 1500
+      "tolerance": 400
     },
     {
       "type": "dns",
