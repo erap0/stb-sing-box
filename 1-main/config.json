@@ -98,19 +98,22 @@
         "INDO",
         "SINGA"
       ],
-      "tolerance": 800
+      "tolerance": 800,
+      "interval": "1m"
     },
     {
       "type":"urltest",
       "tag":"INDO",
       "providers":"ID",
-      "tolerance": 400
+      "tolerance": 400,
+      "interval": "30s"
     },
     {
       "type":"urltest",
       "tag":"SINGA",
       "providers":"SG",
-      "tolerance": 400
+      "tolerance": 400,
+      "interval": "30s"
     },
     {
       "type":"urltest",
@@ -219,9 +222,9 @@
       "tag": "ID",
       "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
       "download_ua": "sing-box",
-      "download_interval": "1h0m0s",
+      "download_interval": "24h0m0s",
       "download_detour": "OUT",
-      "healthcheck_interval": "15m0s"
+      "healthcheck_interval": "5m0s"
     },
     {
       "type": "remote",
@@ -229,15 +232,15 @@
       "tag": "SG",
       "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
       "download_ua": "sing-box",
-      "download_interval": "1h0m0s",
+      "download_interval": "24h0m0s",
       "download_detour": "OUT",
-      "healthcheck_interval": "15m0s"
+      "healthcheck_interval": "5m0s"
     },
     {
       "type": "local",
       "path": "proxy/udp.txt",
       "tag": "UDP",
-      "healthcheck_interval": "15m0s"
+      "healthcheck_interval": "5m0s"
     }
   ],
   "experimental": {
