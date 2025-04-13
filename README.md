@@ -12,4 +12,4 @@ using binary by sxlmnwb
 
 updated for sing-box-v.1.10.7 (April, 13th 2025)
 
-https://sxlmnwb.nodex.one/sing-box/stable/
+https://sxlmnwb.nodex.one/sing-box/stable-multi-dns/
