@@ -1,0 +1,234 @@
+{
+    "log": {
+      "level": "error",
+      "timestamp": true
+    },
+    "dns": {
+      "servers": [
+        {
+          "tag": "remote",
+          "address": "tls://dns.google",
+          "address_resolver": "dns_resolver",
+          "address_strategy": "prefer_ipv4"
+        },
+        {
+          "tag": "dns_resolver",
+          "address": "8.8.8.8",
+          "detour": "RESOLVE"
+        },
+        {
+          "tag": "local",
+          "address": [
+            "112.215.198.248",
+            "112.215.198.254"
+          ],
+          "detour": "DIRECT"
+        },
+        {
+          "tag": "rcode",
+          "address": "rcode://success",
+          "detour": "BLOCK"
+        }
+      ],
+      "rules": [
+        {
+          "outbound": "any",
+          "server": "local",
+          "disable_cache": true
+        },
+        {
+          "domain_suffix": "wpad.google.com",
+          "server": "rcode"
+        },
+        {
+          "ip_cidr": "104.17.3.81",
+          "server": "local"
+        },
+        {
+          "outbound": "any",
+          "server": "rcode",
+          "disable_cache": true
+        }
+      ]
+    },
+    "inbounds": [
+      {
+        "type": "tproxy",
+        "tag": "tproxy-in",
+        "listen": "::",
+        "listen_port": 9898,
+        "sniff": true
+      }
+    ],
+    "outbounds": [
+      {
+        "type": "selector",
+        "tag": "OUT",
+        "outbounds": [
+          "PROXY",
+          "DIRECT"
+        ]
+      },
+      {
+        "type": "urltest",
+        "tag": "PROXY",
+        "outbounds": [
+          "INDO",
+          "SINGA"
+        ],
+        "interval": "1m0s",
+        "tolerance": 800
+      },
+      {
+        "type": "urltest",
+        "tag": "INDO",
+        "providers": "ID",
+        "interval": "30s",
+        "tolerance": 400
+      },
+      {
+        "type": "urltest",
+        "tag": "SINGA",
+        "providers": "SG",
+        "interval": "30s",
+        "tolerance": 400
+      },
+      {
+        "type": "urltest",
+        "tag": "RESOLVE",
+        "providers": "UDP",
+        "tolerance": 400
+      },
+      {
+        "type": "dns",
+        "tag": "DNS"
+      },
+      {
+        "type": "direct",
+        "tag": "DIRECT"
+      },
+      {
+        "type": "block",
+        "tag": "BLOCK"
+      }
+    ],
+    "route": {
+      "rules": [
+        {
+          "type": "logical",
+          "mode": "and",
+          "rules": [
+            {
+              "rule_set": "geosite-youtube"
+            },
+            {
+              "protocol": "quic"
+            }
+          ],
+          "outbound": "BLOCK"
+        },
+        {
+          "type": "logical",
+          "mode": "or",
+          "rules": [
+            {
+              "port": 53
+            },
+            {
+              "protocol": "dns"
+            }
+          ],
+          "outbound": "DNS"
+        },
+        {
+          "ip_is_private": true,
+          "outbound": "DIRECT"
+        },
+        {
+          "network": "udp",
+          "outbound": "RESOLVE"
+        },
+        {
+          "rule_set": [
+            "ABPindo",
+            "AdGuard",
+            "big_oisd",
+            "d3host"
+          ],
+          "outbound": "BLOCK"
+        }
+      ],
+      "rule_set": [
+        {
+          "type": "local",
+          "tag": "ABPindo",
+          "format": "binary",
+          "path": "providers/ABPindo.srs"
+        },
+        {
+          "type": "local",
+          "tag": "AdGuard",
+          "format": "binary",
+          "path": "providers/AdGuard.srs"
+        },
+        {
+          "type": "local",
+          "tag": "big_oisd",
+          "format": "binary",
+          "path": "providers/big_oisd.srs"
+        },
+        {
+          "type": "local",
+          "tag": "d3host",
+          "format": "binary",
+          "path": "providers/d3host.srs"
+        },
+        {
+          "type": "local",
+          "tag": "geosite-youtube",
+          "format": "binary",
+          "path": "providers/geosite-youtube.srs"
+        }
+      ],
+      "final": "OUT",
+      "auto_detect_interface": false
+    },
+    "outbound_providers": [
+      {
+        "type": "remote",
+        "path": "proxy/indo.txt",
+        "tag": "ID",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=ID&vpn=vless&domain=104.17.3.81&limit=20&port=443",
+        "download_ua": "sing-box",
+        "download_interval": "24h0m0s",
+        "download_detour": "OUT",
+        "healthcheck_interval": "5m0s"
+      },
+      {
+        "type": "remote",
+        "path": "proxy/singapura.txt",
+        "tag": "SG",
+        "download_url": "https://nautica.foolvpn.me/api/v1/sub?format=raw&cc=SG&vpn=vless&domain=104.17.3.81&limit=20&port=443",
+        "download_ua": "sing-box",
+        "download_interval": "24h0m0s",
+        "download_detour": "OUT",
+        "healthcheck_interval": "5m0s"
+      },
+      {
+        "type": "local",
+        "path": "proxy/udp.txt",
+        "tag": "UDP",
+        "healthcheck_interval": "5m0s"
+      }
+    ],
+    "experimental": {
+      "cache_file": {
+        "enabled": true,
+        "path": "cache.db"
+      },
+      "clash_api": {
+        "external_controller": "0.0.0.0:9090",
+        "external_ui": "./dist/"
+      }
+    }
+  }
